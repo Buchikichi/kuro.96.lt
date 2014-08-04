@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QZ</title>
+<link rel="stylesheet" href="./js/jquery-ui/jquery-ui.css"/>
+<link rel="stylesheet" href="./css/default.css"/>
+<script type="text/javascript" src="./js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./js/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="./js/index.js"></script>
+</head>
+
+<body>
+<form id="mainForm">
+	<input type="hidden" name="ticket"/>
+	<table>
+		<tr>
+			<td><select name="catID"></select></td>
+			<td><select name="numOfQuestion"></select></td>
+			<td><button id="beginBtn" type="button">Begin</button></td>
+		</tr>
+	</table>
+	<div id="game" style="display:none;">
+		<table>
+			<tr>
+				<td><input type="text" name="index" class="numeric" disabled/></td>
+				<td>
+					<table id="progress"></table>
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="qID"/>
+		<input type="hidden" name="seq"/>
+		<div id="questionText" class="ui-widget-content" style="display:none;"></div>
+		<div id="answers"><ol></ol></div>
+		<input id="judgmentBtn" type="button" value="Judge" style="display:none;"/>
+		<div id="judgment"></div>
+		<input id="nextBtn" type="button" value="Next"/>
+		<input type="text" name="ratio"/>
+	</div>
+</form>
+<div id="result">
+	<table id="resultTable" class="resultList" style="display:none;"></table>
+	<span id="resultIcon" class="ui-icon ui-icon-triangle-1-e"></span>
+	<textarea id="resultText" style="display:none;"></textarea>
+</div>
+<div id="loginDialog" title="Login" style="display:none;">
+	<form id="mainForm">
+		<input type="text" name="user"/>
+		<br/>
+		<input type="password" name="pass"/>
+	</form>
+</div>
+</body>
+</html>
