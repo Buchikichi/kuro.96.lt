@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	var ticket = $('input[name=ticket]').val();
 	var beginBtn = $('#beginBtn');
+	var judgmentBtn = $('#judgmentBtn');
 
 	beginBtn.button();
 	beginBtn.click(function() {
@@ -33,13 +34,14 @@ $(document).ready(function() {
 			var li = $('#answers li.ui-selected');
 
 			if (0 == li.length) {
-				$('#judgmentBtn').attr('disabled', 'disabled');
+				judgmentBtn.button('disable');
 			} else {
-				$('#judgmentBtn').removeAttr('disabled');
+				judgmentBtn.button('enable');
 			}
 		}
 	});
-	$('#judgmentBtn').click(function() {
+	judgmentBtn.button();
+	judgmentBtn.click(function() {
 		judge(this);
 	});
 	$('#nextBtn').click(function() {
@@ -202,24 +204,27 @@ function init() {
 				categoryChanged(select);
 			}
 		});
+		select.selectmenu('enable');
 		categoryChanged(select);
 	});
 }
 function categoryChanged(select) {
 	var opt = select.find('option:selected');
 	var max = opt.attr('cnt');
-	var num = $('select[name=numOfQuestion]');
+	var select = $('select[name=numOfQuestion]');
 	var beginBtn = $('#beginBtn');
 
+	select.empty();
 	$([10, 20, 50, 100]).each(function(ix, val) {
 		if (max < val) {
 			return false;
 		}
 		var opt = $('<option>' + val + '</option>');
 		opt.attr('value', val);
-		num.append(opt);
+		select.append(opt);
 	});
-	$('select[name=numOfQuestion]').selectmenu();
+	select.selectmenu();
+	select.selectmenu('enable');
 }
 function makeSettings(base, act, nameList) {
 	var tr = $(base).parents('form:first');

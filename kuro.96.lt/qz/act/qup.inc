@@ -1,4 +1,5 @@
 <?php
+require_once('inc/dba/CategoryDao.inc');
 require_once('inc/dba/QuestionDao.inc');
 require_once('inc/dba/AnswerDao.inc');
 header('Content-type: text/html; charset=UTF-8');
@@ -8,47 +9,44 @@ header('Content-type: text/html; charset=UTF-8');
  * @author H.Sasai
  */
 class Processor extends ProcessorBase {
+	var $catDao;
+	var $questionDao;
+
 	function getParamNames() {
 		return array('ticket', 'catID');
 	}
-	function makeData() {
-		$filename = APP_ROOT.'/txt/beer.txt';
-		if (!is_file($filename)) {
-			$this->cause = $filename;
-			return null;
-		}
-		$catID = $_REQUEST['catID'];
-		if (empty($catID)) {
-			$this->cause = 'Bad catID.';
-			return null;
-		}
-		$questionDao = new QuestionDao();
+
+	function updateQuestions($filename, $defaultCatID) {
+		$catID = $defaultCatID;
 		$answerDao = new AnswerDao();
 		$lines = file($filename);
 		$params = array();
 		$content = '';
 		$answer = array();
 		$phase = 0;
-		$questionDao->beginTransaction();
-		$questionDao->delete($catID);
 		$numOfQuestions = 0;
 		foreach ($lines as $line_num => $line) {
 			$ch = substr($line, 0, 1);
+			if ($ch == '@') {
+				$catName = substr($line, 1);
+				$catName = str_replace(array("\r\n","\n","\r"), '', $catName);
+				$catID = $this->catDao->getCatID($catName);
+			}
 			if ($ch == '-') {
 				if (!empty($content)) {
-					$qID = $questionDao->getUUID();
+					$qID = $this->questionDao->getUUID();
 					$params = array(
-						'qID'=>$qID,
-						'catID'=>$catID,
-						'content'=>$content,
+							'qID'=>$qID,
+							'catID'=>$catID,
+							'content'=>$content,
 					);
 					$numOfQuestions++;
-					$questionDao->insert($params);
+					$this->questionDao->insert($params);
 					foreach ($answer as $seq => $answerContent) {
 						$params = array(
-							'qID'=>$qID,
-							'seq'=>$seq,
-							'content'=>$answerContent,
+								'qID'=>$qID,
+								'seq'=>$seq,
+								'content'=>$answerContent,
 						);
 						$answerDao->insert($params);
 					}
@@ -68,13 +66,37 @@ class Processor extends ProcessorBase {
 				$answer[] = $line;
 			}
 		}
-		$questionDao->commit();
+		return $numOfQuestions;
+	}
+
+	function makeData() {
+		$catID = $_REQUEST['catID'];
+		if (empty($catID)) {
+			$this->cause = 'Bad catID.';
+			return null;
+		}
+		$this->catDao = new CategoryDao();
+		$this->questionDao = new QuestionDao();
+		$this->questionDao->beginTransaction();
+		$this->questionDao->delete($catID);
+		$fileList = array();
+		$dir = APP_ROOT.'/txt/';
+		$files = scandir($dir);
+		foreach ($files as $filename) {
+			if (strpos($filename, '.txt') === false) {
+				continue;
+			}
+			$cnt = $this->updateQuestions($dir.$filename, $catID);
+			$fileList[] = array('file'=>$filename, 'count'=>$cnt);
+		}
+		$this->questionDao->commit();
 		$now = date('Y-m-d H:i:s');
 		return array(
-			'count'=>$numOfQuestions,
+			'files'=>$fileList,
 			'sysDate'=>$now,
 		);
 	}
+
 	function success($result) {
 		return $result;
 	}

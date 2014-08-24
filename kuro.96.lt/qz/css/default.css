@@ -133,6 +133,7 @@ select[name=numOfQuestion] {
 	width: 80px;
 }
 input[name=index] {
+	font-size: x-large;
 	width: 40px;
 	color: black;
 	background-color: transparent;

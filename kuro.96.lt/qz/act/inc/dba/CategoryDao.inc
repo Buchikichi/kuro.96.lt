@@ -35,6 +35,24 @@ EOD;
 	}
 
 	/**
+	 * CatIDを取得する.
+	 * @param unknown $catName
+	 */
+	function getCatID($catName) {
+		$query = <<<EOD
+SELECT
+  *
+FROM
+  category
+WHERE
+  catName = :catName
+EOD;
+		$param = array('catName'=>$catName);
+		$rec = $this->selectOne($query, $param);
+		return $rec['catID'];
+	}
+
+	/**
 	 * Categoryの一覧を取得する.
 	 */
 	function getList($param) {
