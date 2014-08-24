@@ -1,15 +1,5 @@
 <?php
-if (defined('IS_KURO')) {
-	define('HOST', 'mysql.hostinger.jp');
-	define('DBNM', 'u694154991_qs');
-	define('USER', 'u694154991_qs');
-	define('PASS', 'mana!0807');
-} else {
-	define('HOST', '127.0.0.1');
-	define('DBNM', 'qz');
-	define('USER', 'root');
-	define('PASS', 'natamame');
-}
+require_once('connect.inc');
 
 class DaoBase {
 	private static $dbh = null;
