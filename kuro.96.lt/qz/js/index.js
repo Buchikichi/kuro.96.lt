@@ -98,6 +98,9 @@ function judge(obj) {
 		var td = $('#progress td').eq(index);
 
 		judgment(map.result);
+		if (td.hasClass('done')) {
+			return;
+		}
 		td.removeClass('rightAnswer');
 		td.removeClass('incorrect');
 		if (map.judge) {
@@ -117,7 +120,11 @@ function judgment(msg) {
 	judgment.show('bounce', { times: 3 }, 'slow');
 }
 function convertQuestion(question) {
-	var result = question.replace('誤っている', '<span class="mistake">誤っている</span>');
+	var result = question;
+	var words = ['誤っている', '適切でない'];
+	$(words).each(function(ix, word) {
+		result = result.replace(word, '<span class="mistake">' + word + '</span>');
+	});
 	return result;
 }
 /**

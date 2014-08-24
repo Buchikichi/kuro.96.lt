@@ -12,8 +12,8 @@ class QuestionDao extends DaoBase {
 	 * @return number
 	 */
 	function insert($param) {
-		$query = 'INSERT INTO question(qID, catID, content)'
-			.' VALUES(:qID, :catID, :content)';
+		$query = 'INSERT INTO question(qID, catID, source, content)'
+			.' VALUES(:qID, :catID, :source, :content)';
 		return $this->execute($query, $param);
 	}
 

@@ -4,6 +4,7 @@ require_once('inc/dba/QuestionDao.inc');
 require_once('inc/dba/AnswerDao.inc');
 header('Content-type: text/html; charset=UTF-8');
 
+define('TXT_DIR', APP_ROOT.'/txt/');
 /**
  * 問題更新.
  * @author H.Sasai
@@ -19,7 +20,7 @@ class Processor extends ProcessorBase {
 	function updateQuestions($filename, $defaultCatID) {
 		$catID = $defaultCatID;
 		$answerDao = new AnswerDao();
-		$lines = file($filename);
+		$lines = file(TXT_DIR.$filename);
 		$params = array();
 		$content = '';
 		$answer = array();
@@ -31,6 +32,7 @@ class Processor extends ProcessorBase {
 				$catName = substr($line, 1);
 				$catName = str_replace(array("\r\n","\n","\r"), '', $catName);
 				$catID = $this->catDao->getCatID($catName);
+				continue;
 			}
 			if ($ch == '-') {
 				if (!empty($content)) {
@@ -38,11 +40,15 @@ class Processor extends ProcessorBase {
 					$params = array(
 							'qID'=>$qID,
 							'catID'=>$catID,
+							'source'=>$filename,
 							'content'=>$content,
 					);
 					$numOfQuestions++;
 					$this->questionDao->insert($params);
 					foreach ($answer as $seq => $answerContent) {
+						if (strpos($answerContent, '.') == 1) {
+							$answerContent = substr($answerContent, 2);
+						}
 						$params = array(
 								'qID'=>$qID,
 								'seq'=>$seq,
@@ -80,13 +86,12 @@ class Processor extends ProcessorBase {
 		$this->questionDao->beginTransaction();
 		$this->questionDao->delete($catID);
 		$fileList = array();
-		$dir = APP_ROOT.'/txt/';
-		$files = scandir($dir);
+		$files = scandir(TXT_DIR);
 		foreach ($files as $filename) {
 			if (strpos($filename, '.txt') === false) {
 				continue;
 			}
-			$cnt = $this->updateQuestions($dir.$filename, $catID);
+			$cnt = $this->updateQuestions($filename, $catID);
 			$fileList[] = array('file'=>$filename, 'count'=>$cnt);
 		}
 		$this->questionDao->commit();

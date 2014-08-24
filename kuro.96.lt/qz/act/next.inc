@@ -32,6 +32,7 @@ class Processor extends ProcessorBase {
 		$now = date('Y-m-d H:i:s');
 		return array(
 			'qID'=>$qId,
+			'source'=>$question['source'],
 			'question'=>$questionText,
 			'answer'=>$list,
 			'sysDate'=>$now,

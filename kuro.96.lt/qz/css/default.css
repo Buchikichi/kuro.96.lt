@@ -141,6 +141,9 @@ input[name=index] {
 	border-style: solid;
 	border-color: black;
 }
+#nextBtn {
+	margin-top: 20px;
+}
 input[name=ratio] {
 	width: 50px;
 	color: #606060;
