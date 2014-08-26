@@ -28,9 +28,10 @@ class Processor extends ProcessorBase {
 		$numOfQuestions = 0;
 		foreach ($lines as $line_num => $line) {
 			$ch = substr($line, 0, 1);
+			$word = substr($line, 1);
+			$word = str_replace(array("\r\n","\n","\r"), '', $word);
 			if ($ch == '@') {
-				$catName = substr($line, 1);
-				$catName = str_replace(array("\r\n","\n","\r"), '', $catName);
+				$catName = $word;
 				$catID = $this->catDao->getCatID($catName);
 				continue;
 			}
@@ -64,6 +65,11 @@ class Processor extends ProcessorBase {
 			}
 			if ($ch == '/') {
 				$phase = 1;
+				continue;
+			}
+			if ($ch == '&') {
+				$path = strtolower($catName);
+				$content .= '<img src="img/'.$path.'/'.$word.'"/>';
 				continue;
 			}
 			if ($phase == 0) {
