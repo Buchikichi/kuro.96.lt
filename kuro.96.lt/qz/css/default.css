@@ -90,6 +90,12 @@ span.ui-icon {
 	color: #e0e0e0;
 	background-color: #FF8080;
 }
+#controlsTable {
+	width: 100%;
+}
+#controlsTable td:nth-child(2) {
+	text-align: right;
+}
 
 /*
  * answer
@@ -97,7 +103,8 @@ span.ui-icon {
 #answers ol {
 	list-style-type: none; margin: 0; padding: 0; width: auto; }
 #answers li {
-	margin: 3px;
+	font-size: large;
+	margin: 4px;
 	padding: 0.4em;
 	background-color: #e0e0e0;
 	border: 1px transparent solid;
@@ -141,11 +148,14 @@ input[name=index] {
 	border-style: solid;
 	border-color: black;
 }
+#judgmentBtn {
+	font-size: x-large;
+}
 #nextBtn {
-	margin-top: 20px;
+	font-size: x-large;
 }
 input[name=ratio] {
-	width: 50px;
+	width: 100px;
 	color: #606060;
 	border-color: transparent;
 }

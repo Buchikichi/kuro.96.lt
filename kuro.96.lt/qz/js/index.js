@@ -2,6 +2,7 @@ $(document).ready(function() {
 	var ticket = $('input[name=ticket]').val();
 	var beginBtn = $('#beginBtn');
 	var judgmentBtn = $('#judgmentBtn');
+	var nextBtn = $('#nextBtn');
 
 	beginBtn.button();
 	beginBtn.click(function() {
@@ -44,7 +45,8 @@ $(document).ready(function() {
 	judgmentBtn.click(function() {
 		judge(this);
 	});
-	$('#nextBtn').click(function() {
+	nextBtn.button();
+	nextBtn.click(function() {
 		var index = parseInt($('input[name=index]').val()) + 1;
 		var max = $('[name=numOfQuestion]').val();
 
