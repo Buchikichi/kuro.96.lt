@@ -27,15 +27,15 @@ class Processor extends ProcessorBase {
 		$phase = 0;
 		$numOfQuestions = 0;
 		foreach ($lines as $line_num => $line) {
-			$ch = substr($line, 0, 1);
-			$word = substr($line, 1);
-			$word = str_replace(array("\r\n","\n","\r"), '', $word);
+			$cmd = str_replace(array("\r\n","\n","\r"), '', $line);
+			$ch = substr($cmd, 0, 1);
+			$word = substr($cmd, 1);
 			if ($ch == '@') {
 				$catName = $word;
 				$catID = $this->catDao->getCatID($catName);
 				continue;
 			}
-			if ($ch == '-') {
+			if (strpos($cmd, '--') === 0) {
 				if (!empty($content)) {
 					$qID = $this->questionDao->getUUID();
 					$params = array(
@@ -63,7 +63,7 @@ class Processor extends ProcessorBase {
 				$phase = 0;
 				continue;
 			}
-			if ($ch == '/') {
+			if ($cmd == '/') {
 				$phase = 1;
 				continue;
 			}

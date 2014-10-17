@@ -5,8 +5,9 @@
 <title>QZ</title>
 <link rel="stylesheet" href="./js/jquery-ui/jquery-ui.css"/>
 <link rel="stylesheet" href="./css/default.css"/>
-<script type="text/javascript" src="./js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="./js/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="./js/jquery.balloon.js"></script>
 <script type="text/javascript" src="./js/index.js"></script>
 </head>
 
@@ -32,7 +33,10 @@
 		<input type="hidden" name="qID"/>
 		<input type="hidden" name="seq"/>
 		<div id="questionText" class="ui-widget-content" style="display:none;"></div>
-		<div id="answers"><ol></ol></div>
+		<div id="answers">
+			<ol></ol>
+			<input type="text" name="description"/>
+		</div>
 		<table id="controlsTable">
 			<tr>
 				<td><input id="judgmentBtn" type="button" value="Judge" style="display:none;"/></td>

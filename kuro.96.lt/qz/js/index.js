@@ -41,6 +41,19 @@ $(document).ready(function() {
 			}
 		}
 	});
+	$('#answers input').keyup(function(e) {
+		var val = $(this).val();
+
+		if (0 == val.length) {
+			judgmentBtn.button('disable');
+		} else {
+			judgmentBtn.button('enable');
+		}
+		if (13 == e.which) {
+			judgmentBtn.click();
+			judgmentBtn.focus();
+		}
+	});
 	judgmentBtn.button();
 	judgmentBtn.click(function() {
 		judge(this);
@@ -51,6 +64,7 @@ $(document).ready(function() {
 		var max = $('[name=numOfQuestion]').val();
 
 //$('#judgment').text('index:' + index + '/' + max);
+		judgmentBtn.hideBalloon();
 		if (max < index) {
 			$(this).attr('disabled', 'disabled');
 			$('#judgment').html('<span>End.</span>');
@@ -86,15 +100,26 @@ function showProgress() {
  * 判定結果を表示.
  */
 function judge(obj) {
+	var num = $('#answers li').length;
 	var li = $('#answers li.ui-selected');
+	var description = $('#answers input').val();
 
-	if (li.length != 1) {
-		judgment('Please select only one answer.');
-		return;
+	if (0 < num) {
+		// 選択式回答
+		if (li.length != 1) {
+			judgment('Please select only one answer.');
+			return;
+		}
+	} else {
+		// 入力式回答
+		if (description.length == 0) {
+			judgment('Please input the answer.');
+			return;
+		}
 	}
 	var seq = li.attr('seq');
 	$('input[name=seq]').val(seq);
-	var settings = makeSettings(obj, 'judge', ['ticket', 'qID', 'seq']);
+	var settings = makeSettings(obj, 'judge', ['ticket', 'qID', 'seq', 'description']);
 	ajax(settings, function(map) {
 		var index = parseInt($('input[name=index]').val()) - 1;
 		var td = $('#progress td').eq(index);
@@ -109,6 +134,14 @@ function judge(obj) {
 			td.addClass('rightAnswer');
 		} else {
 			td.addClass('incorrect');
+			if (num == 0) {
+				// 入力式回答
+				$('#judgmentBtn').showBalloon({
+					position: 'right',
+					contents: map.answer,
+					hideDuration: 0
+				});
+			}
 		}
 		td.addClass('done');
 		showProgress();
@@ -144,6 +177,7 @@ function showQuestion() {
 		var question = convertQuestion(map['question']);
 		var questionText = $('#questionText');
 		var ol = $('#answers ol');
+		var inp = $('#answers input');
 
 		$('input[name=qID]').val(map['qID']);
 		if (questionText.hasClass('ui-resizable')) {
@@ -153,12 +187,23 @@ function showQuestion() {
 		questionText.resizable();
 		questionText.show();
 		ol.empty();
-		$(map.answer).each(function(iy, rec) {
-			var li = $('<li>' + rec.content + '</li>');
-			li.attr('seq', rec.seq);
-			ol.append(li);
-		});
-		ol.selectable('refresh');
+		if (1 < map.answer.length) {
+			// 選択式回答
+			$(map.answer).each(function(iy, rec) {
+				var li = $('<li>' + rec.content + '</li>');
+				li.attr('seq', rec.seq);
+				ol.append(li);
+			});
+			ol.selectable('refresh');
+			ol.show();
+			inp.hide();
+		} else {
+			// 入力式回答
+			inp.val('');
+			inp.show();
+			inp.focus();
+			ol.hide();
+		}
 		$('#judgmentBtn').attr('disabled', 'disabled');
 		$('#judgmentBtn').show();
 		$('#judgment').empty();

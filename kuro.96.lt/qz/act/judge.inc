@@ -13,12 +13,19 @@ class Processor extends ProcessorBase {
 	function makeData() {
 		$qID = $_REQUEST['qID'];
 		$seq = $_REQUEST['seq'];
+		$description = $_REQUEST['description'];
 		$answerDao = new AnswerDao();
 		$answer = $answerDao->getAnswer($qID);
-		$isOK = $answer['seq'] == $seq;
-		$result = $isOK ? '○正解' : '×不正解';
 		$content = $answer['content'];
-		$content = str_replace("\\n", "<br/>", $content);
+		$content = str_replace("\n", "", $content);
+		if (!empty($seq)) {
+			// 選択式回答
+			$isOK = $answer['seq'] == $seq;
+		} else {
+			// 入力式回答
+			$isOK = $description == $content;
+		}
+		$result = $isOK ? '○正解' : '×不正解';
 		$now = date('Y-m-d H:i:s');
 		return array(
 			'judge'=>$isOK,
